@@ -259,37 +259,17 @@
 			var proWeihu = "<span class='label label-danger'>" + row.proWeihu
 					+ "</span>";
 		}
-	var tds = "<td id='tProId'>"
-				+ row.id
-				+ "</td>"
-				+ "<td>"
-				+ row.name
-				+ "</td>"
-				+ "<td>"
-				+ row.serviceDept
-				+ "</td>"
-				+ "<td>"
-				+ row.weibao
-				+ "</td>"
-				+ "<td>"
-				+ row.proSource
-				+ "</td>"
-				+ "<td>"
-				+ proWeihu
-				+ "</td>"
-				+ "<td>"
-				+ row.proType
-				+ "</td>"
-				+ "<td>"
-				+ new Date(row.createdTime).toLocaleString()
-				+ "</td>"
-				+ "<td>"
-				+ new Date(row.modifiedTime).toLocaleString()
-				+ "</td>"
-				+ "<td><button type='button' class='btn btn-block btn-danger btn-sm' id='proDel'>删除</button>"
-				+ "</td>"
-				+ "<td><button type='button' class='btn btn-block btn-success btn-sm' id='proUpdate'>更新</button>"
-				+ "</td>";
+	var tds = "<td id='tProId'>"+ row.id + "</td>"
+				+ "<td>"+ row.name + "</td>"
+				+ "<td>"+ row.serviceDept + "</td>"
+				+ "<td>"+ row.weibao + "</td>"
+				+ "<td>"+ row.proSource + "</td>"
+				+ "<td>"+ proWeihu + "</td>"
+				+ "<td>"+ row.proType + "</td>"
+				+ "<td>"+ new Date(row.createdTime).toLocaleString() + "</td>"
+				+ "<td>"+ new Date(row.modifiedTime).toLocaleString() + "</td>"
+				+ "<td><button type='button' class='btn btn-block btn-danger btn-sm' id='proDel'>删除</button>" + "</td>"
+				+ "<td><button type='button' class='btn btn-block btn-success btn-sm' id='proUpdate'>更新</button>" + "</td>";
 		return tds;
 	}
 </script>

@@ -17,4 +17,5 @@ public interface ProjectMapper {
 	void deleteObject(Integer id);
 	Project findObjectById(@Param("id")Integer id);
 	int updateObject(@Param("project")Project project);
+	List<Project> findObjectsByName(@Param("proName")String proName);
 }

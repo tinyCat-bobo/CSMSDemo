@@ -1,7 +1,7 @@
 <!-- Horizontal Form -->
  <div class="box box-info">
       <div class="box-header with-border">
-        <h3 class="box-title">添加用户</h3>
+        <h3 class="box-title">添加工单</h3>
         <h3 class="msg"></h3>
       </div>
       <!-- /.box-header -->
@@ -17,7 +17,8 @@
           <div class="form-group">
             <label for="workOrderPro" class="col-sm-2 control-label">关联项目</label>
             <div class="col-sm-10">
-              <input type="text" class="form-control" readonly="readonly" id="workOrderPro" placeholder="选择项目">
+              <input type="text" class="form-control" readonly="readonly" id="workOrderPro" placeholder="选择项目" 
+              		data-toggle="modal" data-target="#workOrderModal">
             </div>
           </div>
           <div class="form-group">
@@ -54,7 +55,57 @@
 			<a class="layui-layer-btn1 btn-cancel">取消</a>
 	    </div>
      </div>
-  </div>
+     
+     <!-- 模态框 -->
+	<div class="modal fade" id="workOrderModal" tabindex="-1" role="dialog"
+		aria-labelledby="exampleModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title" id="exampleModalLabel">查找项目</h4>
+				</div>
+				<div class="modal-body">
+					<form>
+						<!-- 搜索框 -->
+						<div class="col-lg-12">
+							<div class="input-group">
+								<input type="text" class="form-control"
+									placeholder="Search for..." id="searchPro"> 
+								<span class="input-group-btn">
+									<button class="btn btn-default" type="button" onclick="doFindProjectByName()">Go</button>
+								</span>
+							</div>
+						</div>
+						<div class="col-lg-12">
+							<div>
+								<hr>
+							</div>
+						</div>
+						<div class="form-group">
+							<table class="table table-bordered">
+								<thead>
+									<tr>
+										<!-- 列名 -->
+										<th style="width: 10px">#</th>
+										<th>Name</th>
+									</tr>
+								</thead>
+								<tbody id="modalTbodyId">
+									<!-- 记录 -->
+								</tbody>
+							</table>
+						</div>
+					</form>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-primary" onclick="doSetProSelected()" data-dismiss="modal">确认</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
 <script type="text/javascript" src="bower_components/ztree/jquery.ztree.all.min.js"></script>
 <script type="text/javascript" src="bower_components/layer/layer.js"></script>
 <script type="text/javascript">
@@ -71,10 +122,7 @@
 	}
  }//json 格式的javascript对象
  $(document).ready(function(){
-	 //页面加载完成以后加载角色信息并初始化页面
-	  doLoadRoles();
 	 //事件注册
-	 $(".box-body").on("click","#workOrderPro",doFindProjects);
 	 $(".box-footer")
 	 .on("click",".btn-cancel",doCancel)
 	 .on("click",".btn-save",doSaveOrUpdate);
@@ -86,132 +134,188 @@
 	 $(".form-horizontal")
 	 .on("click",".load-csms-user",doLoadZTreeNodes);
  });
- 
- //查找关联项目
- function doFindProjects(){
-	  var url="workorders/doFindProjects";
-	  $.getJSON(url,function(result){
-		  if(result.status == 200){
-			  alert(result.msg);
-		  }else{
-			  alert(result.msg);
-		  }
-	  });
- }
- 
- function doHideTree(){
-	  $("#treeLayer").css("display","none");
- }
- //确定按钮
- function doConfirm(){
-	  //1.获取选中的记录(id,name);
-	  var selectedNodes=zTree.getSelectedNodes();
-	  var node=selectedNodes[0];
-	  //2.将id和name填写或绑定在具体对象上
-	  $("#deptId").val(node.name);
-	  console.log("node.id="+node.id)
-	  $("#deptId").data("deptId",node.id)
-	  //3.隐藏zTree对应的Div
-	  doHideTree();
- }
- 
- function doLoadZTreeNodes(){
-	  var url="workorders/doFindZTreeNodes";
-	  $("#treeLayer").css("display","block");
-	  $.getJSON(url,function(result){
-		  if(result.status == 200){
-			  zTree = $.fn.zTree.init($("#zTreeId"),setting,result.data);
-		  }else{
-			  alert(result.msg);
-		  }
-	  });
- }
- function doCancel(){
-	$("#mainContentId").removeData("rowData");
-	$("#mainContentId").load("work_order/work_order_list");
- }
- function doSaveOrUpdate(){
-	 var rowData=$("#mainContentId").data("rowData");
-	 //1.获取表单数据
-	 var params=doGetEditFormData();
-	 if(rowData)params.id=rowData.user.id;
-	 //2.发起异步请求
-	 var insertUrl="workorders/doSaveObject";
-	 var updateUrl="workorders/doUpdateObject";
-	 var url=rowData?updateUrl:insertUrl;
-	 console.log(params);
-	 $.post(url,params,function(result){
-		 if(result.status == 200){
-			 alert(result.msg);
-			 doCancel();
-		 }else{
-			alert(result.msg);
-		 }
-	 })
- }
- function doGetEditFormData(){
-	 //获取用户输入的数据
-	 var params={
-	    username:$("#usernameId").val(),
-	    password:$("#passwordId").val(),
-	    email:$("#emailId").val(),
-	    mobile:$("#phoneId").val(),
-	    deptId:$("#deptId").data("deptId")
-	 }
-	 //获取选择的角色
-	 var roleIds=new Array();
-	 $("#rolesId input[name='roleId']")
-	 .each(function(){
-		 if($(this).prop("checked")){
-			roleIds.push($(this).val());
-		 }
-	 });
-	 params.roleIds=roleIds.toString();
-	 return params;
- }
- function doLoadRoles(){
-	 var url="role/doFindRoles"
-	 $.getJSON(url,function(result){
-		 if(result.status == 200){
-		  doInitPageRoles(result.data);
-		  doInitFormData();//修改时
-		 }else{
-		  alert(result.msg);
-		 }
-	 })
- }
- function doInitFormData(){
-     var data=$("#mainContentId").data("rowData");
-     if(!data)return;
-     $("#pwdDiv").remove();
-	 console.log(data);
-	 //初始化用户信息 
-	 $("#usernameId").val(data.user.username);
-	 $("#deptId").val(data.user.sysDept?data.user.sysDept.name:'');
-	 $("#deptId").data("deptId",data.user.sysDept?data.user.sysDept.id:'');
-	 $("#emailId").val(data.user.email);
-	 $("#phoneId").val(data.user.mobile);
-	 //初始化用户角色信息
-	 var ids=data.roleIds;
-	 for(var i in ids){
-	  $("#rolesId input[value='"+ids[i]+"']")
-	  .prop("checked",true);
-	 }
- }
-function doInitPageRoles(data){//List<CheckBox>
-	 //1.获取角色要显示的位置对象
-	 var div=$("#rolesId");
-	 div.empty();
-	 //2.迭代数据，将数据追加到div
-	 var input="<input type='checkbox' name='roleId' value='[id]'>[name]"
-	 for(var i in data){
-		 //记住每次replace时都会产生一个新的字符串对象
-		 var newInput=
-		 input.replace("[id]",data[i].id)
-		 .replace("[name]",data[i].name);
-		 div.append(newInput)
-	 }
- }
+
+	//根据名字查找项目
+	function doFindProjectByName() {
+		var url = "project/doFindProByName";
+		var params = {
+			"proName" : $("#searchPro").val().trim()
+		}
+		$.get(url, params, function(result) {
+			if(result.status == 200){
+				//处理请求结果
+				doHandleResponseResult(result);
+			}else{
+				doHandleResponseFail();
+			}
+
+		});
+	}
+	 
+	function doHandleResponseResult(result){
+		//将查找到的数据(项目名字)显示到模态框的表格中
+		$("#modalTbodyId").empty();
+		var tbody = $("#modalTbodyId");
+		var proNameArray = result.data;	//项目名字数组
+		for(let i = 0;i < proNameArray.length;i++){
+			var tr = `<tr>
+					<td>${i+1}</td>
+					<td onclick='getSelectPro(this)' value=${proNameArray[i].name}>${proNameArray[i].name}</td>
+					</tr>`;
+			tbody.append(tr);
+			//将查询到的名字值绑定至box-title
+			$(".box-title").data("proNameSelected",proNameArray[i].name);
+		}
+	}
+	//点击模态框中查询到的项目,即可选中
+	function getSelectPro(value){
+		var proNameSelected = value.innerHTML;
+		$("#workOrderPro").val(proNameSelected);
+		//清空搜索框和表格内容
+		doClearSearchBox();
+		$("#modalTbodyId").empty();
+		//关闭模态框
+		$("#workOrderModal").modal("hide");
+	}
+	
+	//模态框项目查找失败
+	function doHandleResponseFail(){
+		//清空模态框表格数据
+		$("#modalTbodyId").empty();
+	}
+	
+	//将搜索到的项目名字显示在创建页面
+	function doSetProSelected(){
+		var proNameSelected = $(".box-title").data("proNameSelected");
+		$("#workOrderPro").val(proNameSelected);
+		//清空搜索框和表格内容
+		doClearSearchBox();
+		$("#modalTbodyId").empty();
+	}
+	
+	function doClearSearchBox(){
+		//清空模态框搜索框
+		$("#searchPro").val("");
+	}
+	
+	//TODO/////////////////////////////////////////////////////////////////////////////////////
+	
+	
+	function doHideTree() {
+		$("#treeLayer").css("display", "none");
+	}
+	//确定按钮
+	function doConfirm() {
+		//1.获取选中的记录(id,name);
+		var selectedNodes = zTree.getSelectedNodes();
+		var node = selectedNodes[0];
+		//2.将id和name填写或绑定在具体对象上
+		$("#deptId").val(node.name);
+		console.log("node.id=" + node.id)
+		$("#deptId").data("deptId", node.id)
+		//3.隐藏zTree对应的Div
+		doHideTree();
+	}
+
+	function doLoadZTreeNodes() {
+		var url = "workorders/doFindZTreeNodes";
+		$("#treeLayer").css("display", "block");
+		$.getJSON(url, function(result) {
+			if (result.status == 200) {
+				zTree = $.fn.zTree.init($("#zTreeId"), setting, result.data);
+			} else {
+				alert(result.msg);
+			}
+		});
+	}
+	function doCancel() {
+		$("#mainContentId").removeData("rowData");
+		$("#mainContentId").load("work_order/work_order_list");
+	}
+	function doSaveOrUpdate() {
+		var rowData = $("#mainContentId").data("rowData");
+		//1.获取表单数据
+		var params = doGetEditFormData();
+		if (rowData)
+			params.id = rowData.user.id;
+		//2.发起异步请求
+		var insertUrl = "workorders/doSaveObject";
+		var updateUrl = "workorders/doUpdateObject";
+		var url = rowData ? updateUrl : insertUrl;
+		console.log(params);
+		$.post(url, params, function(result) {
+			if (result.status == 200) {
+				alert(result.msg);
+				doCancel();
+			} else {
+				alert(result.msg);
+			}
+		})
+	}
+	function doGetEditFormData() {
+		//获取用户输入的数据
+		var params = {
+			username : $("#usernameId").val(),
+			password : $("#passwordId").val(),
+			email : $("#emailId").val(),
+			mobile : $("#phoneId").val(),
+			deptId : $("#deptId").data("deptId")
+		}
+		//获取选择的角色
+		var roleIds = new Array();
+		$("#rolesId input[name='roleId']").each(function() {
+			if ($(this).prop("checked")) {
+				roleIds.push($(this).val());
+			}
+		});
+		params.roleIds = roleIds.toString();
+		return params;
+	}
+	function doLoadRoles() {
+		var url = "role/doFindRoles"
+		$.getJSON(url, function(result) {
+			if (result.status == 200) {
+				doInitPageRoles(result.data);
+				doInitFormData();//修改时
+			} else {
+				alert(result.msg);
+			}
+		})
+	}
+	function doInitFormData() {
+		var data = $("#mainContentId").data("rowData");
+		if (!data)
+			return;
+		$("#pwdDiv").remove();
+		console.log(data);
+		//初始化用户信息 
+		$("#usernameId").val(data.user.username);
+		$("#deptId").val(data.user.sysDept ? data.user.sysDept.name : '');
+		$("#deptId").data("deptId",
+				data.user.sysDept ? data.user.sysDept.id : '');
+		$("#emailId").val(data.user.email);
+		$("#phoneId").val(data.user.mobile);
+		//初始化用户角色信息
+		var ids = data.roleIds;
+		for ( var i in ids) {
+			$("#rolesId input[value='" + ids[i] + "']").prop("checked", true);
+		}
+	}
+	function doInitPageRoles(data) {//List<CheckBox>
+		//1.获取角色要显示的位置对象
+		var div = $("#rolesId");
+		div.empty();
+		//2.迭代数据，将数据追加到div
+		var input = "<input type='checkbox' name='roleId' value='[id]'>[name]"
+		for ( var i in data) {
+			//记住每次replace时都会产生一个新的字符串对象
+			var newInput = input.replace("[id]", data[i].id).replace("[name]",
+					data[i].name);
+			div.append(newInput)
+		}
+	}
+	
+	
 </script>
     
     

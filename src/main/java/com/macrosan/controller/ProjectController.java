@@ -1,5 +1,7 @@
 package com.macrosan.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,6 +49,17 @@ public class ProjectController {
 		Project project = projectService.findObjectById(id);
 		return SysResult.success(project);
 	}
+	
+	@RequestMapping("doFindProByName")
+	public SysResult doFindObjectById(String proName) {
+		List<Project> projectList = projectService.findObjectByName(proName);
+		if(projectList.size() > 0) {
+			return SysResult.success(projectList);
+		}else {
+			return SysResult.fail();
+		}
+	}
+	
 	/*
 	 * project/doUpdateProject 
 	 */

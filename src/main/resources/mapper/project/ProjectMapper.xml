@@ -48,5 +48,10 @@
 		proWeihu=#{project.proWeihu},proType=#{project.proType},modifiedTime=now()
 		where id=#{project.id}
 	</update>
+	<select id="findObjectsByName" resultType="com.macrosan.pojo.Project">
+		select id,name,serviceDept,weibao,proSource
+		,proWeihu,proType,createdTime,modifiedTime
+		<include refid="queryWhereId"/> 
+	</select>
 	
 </mapper>

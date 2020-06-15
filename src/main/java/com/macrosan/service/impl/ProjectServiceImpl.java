@@ -11,7 +11,6 @@ import com.macrosan.common.exception.ServiceException;
 import com.macrosan.mapper.ProjectMapper;
 import com.macrosan.pojo.Project;
 import com.macrosan.service.ProjectService;
-import com.macrosan.vo.SysResult;
 
 @Service
 public class ProjectServiceImpl implements ProjectService{
@@ -79,6 +78,18 @@ public class ProjectServiceImpl implements ProjectService{
 		}
 		int row = projectMapper.updateObject(project);
 		return row;
+	}
+
+	@Override
+	public List<Project> findObjectByName(String proName) {
+		if(StringUtils.isEmpty(proName)) {
+			throw new IllegalArgumentException("项目名字不能为空");
+		}
+		List<Project> projectList = projectMapper.findObjectsByName(proName);
+		if(projectList == null) {
+			throw new ServiceException("无法查找到相关项目");
+		}
+		return projectList;
 	}
 
 }

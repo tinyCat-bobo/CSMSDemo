@@ -1,5 +1,7 @@
 package com.macrosan.service;
 
+import java.util.List;
+
 import com.macrosan.common.PageObject;
 import com.macrosan.pojo.Project;
 
@@ -9,4 +11,5 @@ public interface ProjectService {
 	void deleteObject(Integer id);
 	Project findObjectById(Integer id);
 	int updateObject(Project project);
+	List<Project> findObjectByName(String proName);
 }
