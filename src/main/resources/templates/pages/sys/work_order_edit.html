@@ -8,32 +8,43 @@
       <!-- form start -->
       <form class="form-horizontal">
         <div class="box-body">
-          <div class="form-group">
-            <label for="workOrderName" class="col-sm-2 control-label">工单名称</label>
-            <div class="col-sm-10">
-              <input type="text" name="workOrderName" class="form-control"  id="workOrderName">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="workOrderPro" class="col-sm-2 control-label">关联项目</label>
-            <div class="col-sm-10">
-              <input type="text" class="form-control" readonly="readonly" id="workOrderPro" placeholder="选择项目" 
-              		data-toggle="modal" data-target="#workOrderModal">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="workOrderType" class="col-sm-2 control-label">工单类型</label>
-            <div class="col-sm-10">
-              <input type="text" name="workOrderType" class="form-control"  id="workOrderType">
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="workOrderFZ" class="col-sm-2 control-label">责任人</label>
-            <div class="col-sm-10">
-              <input type="text" class="form-control load-csms-user" readonly="readonly" id="workOrderFZ" placeholder="选择责任人">
-            </div>
-          </div>
-        </div>
+			<div class="form-group">
+				<label for="workOrderName" class="col-sm-2 control-label">工单名称</label>
+				<div class="col-sm-10">
+					<input type="text" name="workOrderName" class="form-control"
+						id="workOrderName">
+				</div>
+			</div>
+			<div class="form-group" id="divWorkOrderStatus">
+				<label for="workOrderStatus" class="col-sm-2 control-label">工单状态</label>
+				<div class="col-sm-10">
+					<input type="text" name="workOrderStatus" class="form-control"
+						id="workOrderStatus">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="workOrderPro" class="col-sm-2 control-label">关联项目</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control" readonly="readonly"
+						id="workOrderPro" placeholder="选择项目" data-toggle="modal"
+						data-target="#workOrderModal">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="workOrderType" class="col-sm-2 control-label">工单类型</label>
+				<div class="col-sm-10">
+					<input type="text" name="workOrderType" class="form-control"
+						id="workOrderType">
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="workOrderFZ" class="col-sm-2 control-label">责任人</label>
+				<div class="col-sm-10">
+					<input type="text" class="form-control load-csms-user"
+						readonly="readonly" id="workOrderFZ" placeholder="选择责任人">
+				</div>
+			</div>
+		</div>
         <!-- /.box-body -->
         <div class="box-footer">
           <button type="button" class="btn btn-default btn-cancel">取消</button>
@@ -122,10 +133,12 @@
 	}
  }//json 格式的javascript对象
  $(document).ready(function(){
+	 //工单信息回显函数
+	 doInitFormData();
 	 //事件注册
 	 $(".box-footer")
 	 .on("click",".btn-cancel",doCancel)
-	 .on("click",".btn-save",doSaveOrUpdate);
+	 .on("click",".btn-save",doSaveOrUpdateObject);
 	 
 	  $("#treeLayer")
 	  .on("click",".btn-cancel",doHideTree)
@@ -134,6 +147,28 @@
 	 $(".form-horizontal")
 	 .on("click",".load-csms-user",doLoadZTreeNodes);
  });
+ 	
+ 	//工单信息回显
+ 	function doInitFormData(){
+ 		//获取回传的工单信息
+ 		var data = $("#mainContentId").data("rowData");
+ 		var actionType = $(".box-title").text();
+ 		if(actionType == "修改工单" && data != null){
+ 			//如果是修改工单,工单状态行取消隐藏
+ 			$("#divWorkOrderStatus").show();
+ 	 		$("#workOrderName").val(data.name);
+ 			$("#workOrderStatus").val(data.status);
+ 	 		$("#workOrderPro").val(data.relatedProject);
+ 	 		$("#workOrderType").val(data.gdType);
+ 	 		$("#workOrderFZ").val(data.principalUser);
+ 		}else if(actionType == "添加工单"){
+ 			$("#divWorkOrderStatus").hide();
+ 	 		$("#workOrderName").val("");
+ 	 		$("#workOrderPro").val("");
+ 	 		$("#workOrderType").val("");
+ 	 		$("#workOrderFZ").val("");
+ 		}
+ 	}
 
 	//根据名字查找项目
 	function doFindProjectByName() {
@@ -148,7 +183,6 @@
 			}else{
 				doHandleResponseFail();
 			}
-
 		});
 	}
 	 
@@ -198,9 +232,6 @@
 		$("#searchPro").val("");
 	}
 	
-	//TODO/////////////////////////////////////////////////////////////////////////////////////
-	
-	
 	function doHideTree() {
 		$("#treeLayer").css("display", "none");
 	}
@@ -210,13 +241,13 @@
 		var selectedNodes = zTree.getSelectedNodes();
 		var node = selectedNodes[0];
 		//2.将id和name填写或绑定在具体对象上
-		$("#deptId").val(node.name);
+		$("#workOrderFZ").val(node.name);
 		console.log("node.id=" + node.id)
-		$("#deptId").data("deptId", node.id)
+		$("#workOrderFZ").data("workOrderFZ", node.id)	//绑定负责人ID
 		//3.隐藏zTree对应的Div
 		doHideTree();
 	}
-
+	//获取责任人列表,查询用户信息
 	function doLoadZTreeNodes() {
 		var url = "workorders/doFindZTreeNodes";
 		$("#treeLayer").css("display", "block");
@@ -228,99 +259,45 @@
 			}
 		});
 	}
+	
 	function doCancel() {
 		$("#mainContentId").removeData("rowData");
 		$("#mainContentId").load("work_order/work_order_list");
 	}
-	function doSaveOrUpdate() {
-		var rowData = $("#mainContentId").data("rowData");
+	
+	function doSaveOrUpdateObject() {
+		var actionType = $(".box-title").text();
+		//判断页面动作(添加/更新)
+		if(actionType == "添加工单"){
+			var url = "workorders/doSaveObject";
+		}else if(actionType == "修改工单"){
+			var url = "workorders/doUpdateObject";
+		}
 		//1.获取表单数据
 		var params = doGetEditFormData();
-		if (rowData)
-			params.id = rowData.user.id;
-		//2.发起异步请求
-		var insertUrl = "workorders/doSaveObject";
-		var updateUrl = "workorders/doUpdateObject";
-		var url = rowData ? updateUrl : insertUrl;
+		debugger;
 		console.log(params);
 		$.post(url, params, function(result) {
 			if (result.status == 200) {
-				alert(result.msg);
+				//console.log(result.msg);
 				doCancel();
 			} else {
 				alert(result.msg);
 			}
 		})
 	}
+	//获取用户输入的数据
 	function doGetEditFormData() {
-		//获取用户输入的数据
+		var id = ($(".box-title").text()=="添加工单")?null:$("#mainContentId").data("rowData").id
+		debugger;
 		var params = {
-			username : $("#usernameId").val(),
-			password : $("#passwordId").val(),
-			email : $("#emailId").val(),
-			mobile : $("#phoneId").val(),
-			deptId : $("#deptId").data("deptId")
+			id : id,
+			name : $("#workOrderName").val(),
+			status: $("#workOrderStatus").val(),
+			relatedProject : $("#workOrderPro").val(),
+			gdType : $("#workOrderType").val(),
+			principalUser : $("#workOrderFZ").val(),
 		}
-		//获取选择的角色
-		var roleIds = new Array();
-		$("#rolesId input[name='roleId']").each(function() {
-			if ($(this).prop("checked")) {
-				roleIds.push($(this).val());
-			}
-		});
-		params.roleIds = roleIds.toString();
 		return params;
 	}
-	function doLoadRoles() {
-		var url = "role/doFindRoles"
-		$.getJSON(url, function(result) {
-			if (result.status == 200) {
-				doInitPageRoles(result.data);
-				doInitFormData();//修改时
-			} else {
-				alert(result.msg);
-			}
-		})
-	}
-	function doInitFormData() {
-		var data = $("#mainContentId").data("rowData");
-		if (!data)
-			return;
-		$("#pwdDiv").remove();
-		console.log(data);
-		//初始化用户信息 
-		$("#usernameId").val(data.user.username);
-		$("#deptId").val(data.user.sysDept ? data.user.sysDept.name : '');
-		$("#deptId").data("deptId",
-				data.user.sysDept ? data.user.sysDept.id : '');
-		$("#emailId").val(data.user.email);
-		$("#phoneId").val(data.user.mobile);
-		//初始化用户角色信息
-		var ids = data.roleIds;
-		for ( var i in ids) {
-			$("#rolesId input[value='" + ids[i] + "']").prop("checked", true);
-		}
-	}
-	function doInitPageRoles(data) {//List<CheckBox>
-		//1.获取角色要显示的位置对象
-		var div = $("#rolesId");
-		div.empty();
-		//2.迭代数据，将数据追加到div
-		var input = "<input type='checkbox' name='roleId' value='[id]'>[name]"
-		for ( var i in data) {
-			//记住每次replace时都会产生一个新的字符串对象
-			var newInput = input.replace("[id]", data[i].id).replace("[name]",
-					data[i].name);
-			div.append(newInput)
-		}
-	}
-	
-	
 </script>
-    
-    
-    
-    
-    
-    
-    

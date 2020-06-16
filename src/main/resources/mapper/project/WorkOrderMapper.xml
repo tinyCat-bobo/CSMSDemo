@@ -11,7 +11,6 @@
 			</if>
 		</where>
 	</sql>
-
 	<select id="findObjects"
 		resultType="com.macrosan.pojo.WorkOrder">
 		select id,status,name,gdType,principalUser,createdTime,modifiedTime
@@ -37,7 +36,24 @@
 				where 1=2
 			</otherwise>
 		</choose>
-
 	</delete>
-
+	<select id="findZTreeNodes" resultType="com.macrosan.pojo.Node">
+		select id,username as name,superiorId as parentId from csms_users
+	</select>
+	<insert id="saveObject">
+		insert into work_orders (id,status,name,gdType,principalUser,relatedProject,createdTime,modifiedTime)
+		value
+		(#{workOrder.id},#{workOrder.status},#{workOrder.name},#{workOrder.gdType},#{workOrder.principalUser},
+		#{workOrder.relatedProject},#{workOrder.createdTime},#{workOrder.modifiedTime})
+	</insert>
+	<select id="findObjectById" resultType="com.macrosan.pojo.WorkOrder">
+		select id,status,name,gdType,principalUser,relatedProject
+		from work_orders
+		where id=#{id}
+	</select>
+	<update id="updateObject">
+		update work_orders set status=#{workOrder.status},name=#{workOrder.name},gdType=#{workOrder.gdType},principalUser=#{workOrder.principalUser},
+		relatedProject=#{workOrder.relatedProject},createdTime=now()
+		where id=#{workOrder.id}
+	</update>
 </mapper>

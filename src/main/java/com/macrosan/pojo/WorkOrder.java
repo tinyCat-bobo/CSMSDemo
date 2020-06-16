@@ -12,9 +12,11 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WorkOrder extends BasePojo{
-	   private Integer id;
+	private static final long serialVersionUID = -1702979563370273947L;
+	private Integer id;
 	   private String status;
 	   private String name;
 	   private String gdType;
 	   private String principalUser;
+	   private String relatedProject;
 }

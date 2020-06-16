@@ -58,7 +58,9 @@
 	   $(".input-group-btn")
 	   .on("click",".btn-search",doQueryObjects)
 	   .on("click",".btn-delete",doDeleteObjects)
-	   .on("click",".btn-add",doAddObjects);
+	   .on("click",".btn-add",doAddorUpdateObjects);
+	   //为更新按钮注册点击事件
+	   $("#tbodyId").on("click",".btn-update",doAddorUpdateObjects);
 	   
 	   //thead中全选checkbox事件注册
 	   $("#checkAll").click(doChangeTBodyCheckBoxState);
@@ -98,7 +100,7 @@
 	   return idArray
    }
    //添加功能实现
-   function doAddObjects(){
+   function doAddorUpdateObjects(){
 	   //加载添加的页面
 	   var title;
 	   //1.判定点击的对象
@@ -107,23 +109,17 @@
 		   doLoadPage(title);
 	   }else if($(this).hasClass("btn-update")){
 		   title="修改工单";
-		   var id=doGetCheckedId();
+		   var id = $(this).parent("td").parent("tr").find("#workOrderId").text();
+		   $("#mainContentId").data("projectId",id);	//将选中的项目的ID绑定到指定名字中
 		   console.log("id="+id)
-		   if(!id){
-			  alert("请先选择");
-			  return;
-		   }
 		   //基于id进行查询并加载编辑页面
 		   doFindObjectById(id,title);
 	   }
    }
-   
+   //根据ID查找工单
    function doFindObjectById(id,title){
-	   //1.params
 	   var params={"id":id};
-	   //2.url
 	   var url="workorders/doFindObjectById";
-	   //3.ajax request
 	   $.getJSON(url,params,function(result){//JsonResult
 		   if(result.status == 200){
 			  $("#mainContentId").data("rowData",result.data); 
@@ -135,6 +131,9 @@
    }
    
    function doLoadPage(title){
+	   if(title == null){
+		   title = "修改工单";
+	   }
 	   var url="workorders/work_order_edit";
 	   $("#mainContentId").load(url,function(){
 		   $(".box-title").html(title);
@@ -198,7 +197,7 @@
 	   //2.执行查询操作
 	   doGetObjects();
    }
-   //异步加载日志数据
+   //异步加载工单数据
    function doGetObjects(){
 	   //将当前页的选中状态取消
 	   $("#checkAll").prop("checked",false);
@@ -210,7 +209,7 @@
 	   var params={"pageCurrent":pageCurrent}
 	   //获取查询时参数username的值(可能有值，也可能没有值)
 	   var orderName=$("#searchNameId").val();
-	   //假如uname有值，则将key:value添加到params对象中,这里的key需要与控制器方法参数相同
+	   //假如orderName有值，则将key:value添加到params对象中,这里的key需要与控制器方法参数相同
 	   if(orderName)params.orderName=orderName;
 	   //2.定义请求url
 	   var url="workorders/doFindPageObjects";
@@ -258,14 +257,14 @@
 	   
 	   var tds=
 	    "<td><input type='checkbox' class='cBox' value='"+row.id+"'></td>"+
-	    "<td>"+row.id+"</td>"+
+	    "<td id='workOrderId'>"+row.id+"</td>"+
 	    "<td>"+status+"</td>"+
 	    "<td>"+row.name+"</td>"+
 	    "<td>"+row.gdType+"</td>"+
 	    "<td>"+row.principalUser+"</td>"+
 		"<td>"+ new Date(row.createdTime).toLocaleString() + "</td>"+
 		"<td>"+ new Date(row.modifiedTime).toLocaleString() + "</td>"+
-		"<td><button type='button' class='btn btn-block btn-success btn-sm' id='proDel'>更新</button>" + "</td>";
+		"<td><button type='button' class='btn btn-block btn-success btn-sm btn-update'>更新</button>" + "</td>";
 	    return tds;
    }
 </script>
