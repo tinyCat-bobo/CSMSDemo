@@ -53,5 +53,4 @@
 		,proWeihu,proType,createdTime,modifiedTime
 		<include refid="queryWhereId"/> 
 	</select>
-	
 </mapper>

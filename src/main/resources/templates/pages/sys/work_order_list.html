@@ -12,8 +12,12 @@
 							<button type="button" class="btn btn-default btn-search">
                                 <i class="fa fa-search"></i>
 							</button>
-							<button type="button" class="btn btn-default btn-add">创建</button>
-							<button type="button" class="btn btn-default btn-delete">删除</button>
+							<button type="button" class="btn btn-default btn-add">
+								<i class="fa fa-fw fa-plus"></i>
+							</button>
+							<button type="button" class="btn btn-default btn-delete">
+								<i class="fa fa-fw fa-times"></i>
+							</button>
 						</div>
 					</div>
 				</div>
@@ -168,9 +172,9 @@
 	   });  
    }
    //设置删除错误信息
-/*    function doSetErrorMsg(msg){
+    function doSetErrorMsg(msg){
 	   $("#tbodyId").html("<tr><td colspan='7'>"+msg+"</td></tr>");
-   } */
+   }
    //删除后的刷新操作
    function doRefreshAfterDeleteOK(){
 	   //1.假如当前页码值不是最后一页,页码值不变。
@@ -178,13 +182,13 @@
 	   //1)当前页码值已经是最后一页
 	   //2)当前页码值大于>1
 	   //3)还有Thead中checkbox对象状态为全选状态
-/* 	   var pageCurrent=$("#pageId").data("pageCurrent");
+ 	   var pageCurrent=$("#pageId").data("pageCurrent");
 	   var pageCount=$("#pageId").data("pageCount");
 	   var checkAllState=$("#checkAll").prop("checked");
 	   if(checkAllState&&pageCurrent==pageCount&&pageCurrent>1){
 		   pageCurrent--;
 		   $("#pageId").data("pageCurrent",pageCurrent);
-	   } */
+	   }
 	   //3.查询日志信息
 	   doGetObjects();
 	   

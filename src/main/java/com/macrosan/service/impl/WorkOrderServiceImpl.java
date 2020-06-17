@@ -127,5 +127,11 @@ public class WorkOrderServiceImpl implements WorkOrderService {
 		}
 		return row;
 	}
+
+	@Override
+	public List<WorkOrder> findOrderByName(String orderName) {
+		List<WorkOrder> orderList = workOrderMapper.findObjectByName(orderName);
+		return orderList;
+	}
 	
 }

@@ -62,4 +62,10 @@ public class WorkOrderController {
 		return SysResult.success(workOrderService.updateObject(workOrder));
 	}
 	
+	@RequestMapping("doFindOrdersByName")
+	public SysResult doFindOrdersByName(String orderName) {
+		List<WorkOrder> workOrder = workOrderService.findOrderByName(orderName);
+		return SysResult.success(workOrder);
+	}
+	
 }

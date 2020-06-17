@@ -13,4 +13,5 @@ public interface WorkOrderService {
 	int saveObject(WorkOrder workOrder);
 	WorkOrder findObjectById(Integer id);
 	int updateObject(WorkOrder workOrder);
+	List<WorkOrder> findOrderByName(String orderName);
 }

@@ -19,4 +19,5 @@ public interface WorkOrderMapper {
 	List<Node> findZTreeNodes();
 	WorkOrder findObjectById(Integer id);
 	int updateObject(@Param("workOrder")WorkOrder workOrder);
+	List<WorkOrder> findObjectByName(@Param("orderName")String orderName);
 }

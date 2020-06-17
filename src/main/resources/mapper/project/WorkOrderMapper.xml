@@ -56,4 +56,9 @@
 		relatedProject=#{workOrder.relatedProject},createdTime=now()
 		where id=#{workOrder.id}
 	</update>
+	<select id="findObjectByName" resultType="com.macrosan.pojo.WorkOrder">
+		select id,status,name,gdType,principalUser,relatedProject,createdTime,modifiedTime
+		<include refid="queryWhereName" />
+		order by id desc
+	</select>
 </mapper>

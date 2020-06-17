@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.macrosan.mapper.WorkHourMapper">
+	<select id="findObjects" resultType="com.macrosan.vo.WorkHourVo">
+		select
+		h.id,p.name as relatedProjectName,h.hours,h.principalUser,h.note,h.createdTime,h.modifiedTime
+		from work_hours h,csms_projects p
+		<where>
+			h.relatedProjectId=p.id and
+				<if test="proName != null and proName != ''">
+					p.name like concat("%",#{proName},"%")			
+				</if>
+				<if test="proName == null or proName == ''">
+					1=1
+				</if>
+		</where>
+		order by h.id desc
+		limit
+		#{startIndex},#{pageSize}
+	</select>
+	<select id="getRowCount" resultType="int">
+		select count(*) from work_hours h,csms_projects p
+		<where>
+			h.relatedProjectId=p.id and
+				<if test="proName != null and proName != ''">
+					p.name like concat("%",#{proName},"%")
+				</if>
+				<if test="proName == null or proName == ''">
+					1=1
+				</if>
+		</where>
+	</select>
+</mapper>
