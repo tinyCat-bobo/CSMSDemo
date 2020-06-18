@@ -93,7 +93,6 @@
 		var url = "project/doUpdateProject";
 		//获取用户修改的参数
 		var params = doGetEditFormData();
-		debugger;
 		$.post(url, params, function(result) {
 			if (result.status == 200) {
 				doCancel();
@@ -126,10 +125,3 @@
 		$("#projectType").val(data.proType);
 	}
 </script>
-    
-    
-    
-    
-    
-    
-    
