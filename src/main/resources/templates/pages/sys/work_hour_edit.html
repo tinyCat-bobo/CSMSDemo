@@ -8,14 +8,14 @@
       <!-- form start -->
       <form class="form-horizontal">
         <div class="box-body">
-			<div class="form-group">
+			<div class="form-group divWorkHourOrderId">
 				<label for="workHourId" class="col-sm-2 control-label">工单编号</label>
 				<div class="col-sm-10">
 					<input type="text" name="workHourId" class="form-control" readonly="readonly"
 						id="workHourId">
 				</div>
 			</div>
-			<div class="form-group">
+			<div class="form-group divWorkHourOrder">
 				<label for="workHourOrder" class="col-sm-2 control-label">关联工单</label>
 				<div class="col-sm-10">
 					<input type="text" class="form-control" readonly="readonly"
@@ -23,21 +23,21 @@
 						data-target="#workHourModal">
 				</div>
 			</div>
-			<div class="form-group">
+			<div class="form-group divWorkHour">
 				<label for="workHour" class="col-sm-2 control-label">工时(h)</label>
 				<div class="col-sm-10">
 					<input type="text" name="workHour" class="form-control"
 						id="workHour">
 				</div>
 			</div>
-			<div class="form-group">
+			<div class="form-group divWorkOrderFZ">
 				<label for="workOrderFZ" class="col-sm-2 control-label">责任人</label>
 				<div class="col-sm-10">
 					<input type="text" class="form-control load-csms-user"
 						readonly="readonly" id="workOrderFZ" placeholder="选择责任人">
 				</div>
 			</div>
-			<div class="form-group">
+			<div class="form-group divWorkHourNote">
 				<label for="workHourNote" class="col-sm-2 control-label">工时内容</label>
 				<div class="col-sm-10">
 					<input type="text" name="workHourNote" class="form-control"
@@ -120,52 +120,33 @@
 <script type="text/javascript" src="bower_components/ztree/jquery.ztree.all.min.js"></script>
 <script type="text/javascript" src="bower_components/layer/layer.js"></script>
 <script type="text/javascript">
- var zTree; 
- //初始化zTree时会用到
- var setting = {
-	data : {
-		simpleData : {
-			enable : true,
-			idKey : "id",  //节点数据中保存唯一标识的属性名称
-			pIdKey : "parentId",  //节点数据中保存其父节点唯一标识的属性名称
-			rootPId : null  //根节点id
-		}//json 格式javascript对象
-	}
- }//json 格式的javascript对象
- $(document).ready(function(){
-	 //工单信息回显函数
-	 doInitFormData();
-	 //事件注册
-	 $(".box-footer")
-	 .on("click",".btn-cancel",doCancel)
-	 .on("click",".btn-save",doSaveOrUpdateObject);
-	 
-	  $("#treeLayer")
-	  .on("click",".btn-confirm",doConfirm);
- });
- 	
+	$(document).ready(function(){
+	 	//工单信息回显函数
+	 	doInitFormData();
+	 	//事件注册
+	 	$(".box-footer")
+	 	.on("click",".btn-cancel",doCancel)
+	 	.on("click",".btn-save",doSaveOrUpdateObject);
+ 	});
  	//工单信息回显
  	function doInitFormData(){
  		//获取回传的工单信息
- 		var data = $("#mainContentId").data("rowData");
+ 		var data = $("#mainContentId").data("workHourData");
  		var actionType = $(".box-title").text();
  		if(actionType == "修改工时" && data != null){
- 			//如果是修改工单,工单状态行取消隐藏
- 			$("#divWorkOrderStatus").show();
- 	 		$("#workOrderName").val(data.name);
- 			$("#workOrderStatus").val(data.status);
- 	 		$("#workOrderPro").val(data.relatedProject);
- 	 		$("#workOrderType").val(data.gdType);
- 	 		$("#workOrderFZ").val(data.principalUser);
+ 			$(".divWorkHourOrderId").hide();
+ 			$(".divWorkHourOrder").hide();
+ 			$(".divWorkOrderFZ").hide();
+ 	 		$("#workHour").val(data.hours);
+ 	 		$("#workHourNote").val(data.note);
  		}else if(actionType == "添加工时"){
- 			$("#divWorkOrderStatus").hide();
- 	 		$("#workOrderName").val("");
- 	 		$("#workOrderPro").val("");
- 	 		$("#workOrderType").val("");
+ 	 		$("#workHourId").val("");
+ 	 		$("#workHourOrder").val("");
+ 	 		$("#workHour").val("");
  	 		$("#workOrderFZ").val("");
+ 	 		$("#workHourNote").val("");
  		}
  	}
-
 	//根据名字查找项目
 	function doFindOrdersByName() {
 		var url = "workorders/doFindOrdersByName";
@@ -182,7 +163,6 @@
 			}
 		});
 	}
-	
 	function doHandleResponseResult(result){
 		//将查找到的数据(项目名字)显示到模态框的表格中
 		$("#modalTbodyId").empty();
@@ -217,13 +197,11 @@
 		//关闭模态框
 		$("#workHourModal").modal("hide");
 	}
-	
 	//模态框项目查找失败
 	function doHandleResponseFail(){
 		//清空模态框表格数据
 		$("#modalTbodyId").empty();
 	}
-	
 	//将搜索到的工单信息显示在创建页面,点击确定按钮后显示数据
 	function doSetOrderSelected(){
 		var orderNameSelected = $(".box-title").data("orderNameSelected");
@@ -236,19 +214,15 @@
 		doClearSearchBox();
 		$("#modalTbodyId").empty();
 	}
-	
 	function doClearSearchBox(){
 		//清空模态框搜索框
 		$("#searchPro").val("");
 	}
-	
 	function doCancel() {
-		$("#mainContentId").removeData("rowData");
+		$("#mainContentId").removeData("workHourData");
 		$("#mainContentId").load("workhours/work_hour_list");
 	}
-	
 	function doSaveOrUpdateObject() {
-		debugger;
 		var actionType = $(".box-title").text();
 		//判断页面动作(添加/更新)
 		if(actionType == "添加工时"){
@@ -270,7 +244,7 @@
 	}
 	//获取用户输入的数据
 	function doGetEditFormData() {
-		var id = ($(".box-title").text()=="添加工时")?null:$("#mainContentId").data("rowData").id
+		var id = ($(".box-title").text()=="添加工时")?null:$("#mainContentId").data("workHourId");
 		var params = {
 			id : id,
 			workOrderId : $(".box-title").data("orderIdSelected"),

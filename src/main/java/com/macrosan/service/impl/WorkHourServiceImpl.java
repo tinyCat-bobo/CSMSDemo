@@ -18,7 +18,6 @@ import com.macrosan.vo.WorkHourVo;
 
 @Service
 public class WorkHourServiceImpl implements WorkHourService {
-
 	@Autowired
 	private WorkHourMapper workHourMapper;
 	@Autowired
@@ -79,4 +78,27 @@ public class WorkHourServiceImpl implements WorkHourService {
 		return rows;
 	}
 
+	@Override
+	public WorkHour findWorkHourById(Integer id) {
+		if(StringUtils.isEmpty(id) || id < 1) {
+			throw new IllegalArgumentException("请先选择工时记录");
+		}
+		WorkHour workHour = workHourMapper.findObjectById(id);
+		if(workHour == null) {
+			throw new ServiceException("未查到相关的记录");
+		}
+		return workHour;
+	}
+
+	@Override
+	public int updateObject(WorkHour workHour) {
+		if(StringUtils.isEmpty(workHour.getId())) {
+			throw new IllegalArgumentException("ID不能为空");
+		}
+		if(StringUtils.isEmpty(workHour.getHours()) || StringUtils.isEmpty(workHour.getNote())) {
+			throw new IllegalArgumentException("工时信息和工作内容不能为空");
+		}
+		int row = workHourMapper.updateObject(workHour);
+		return row;
+	}
 }

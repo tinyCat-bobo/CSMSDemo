@@ -113,7 +113,7 @@
 		   doLoadPage(title);
 	   }else if($(this).hasClass("btn-update")){
 		   title="修改工时";
-		   var id = $(this).parent("td").parent("tr").find("#workHourId").text();
+		   var id = $(this).parent("td").parent("tr").find("input[type=checkbox]").val();
 		   $("#mainContentId").data("workHourId",id);	//将选中的项目的ID绑定到指定名字中
 		   console.log("id="+id)
 		   //基于id进行查询并加载编辑页面
@@ -126,7 +126,7 @@
 	   var url="workhours/doFindObjectById";
 	   $.getJSON(url,params,function(result){//JsonResult
 		   if(result.status == 200){
-			  $("#mainContentId").data("rowData",result.data); 
+			  $("#mainContentId").data("workHourData",result.data);	//绑定workHour信息
 	          doLoadPage(title);
 		   }else{
 			  alert(result.msg);
@@ -253,8 +253,8 @@
    }
    function doCreateTds(row){
 	   var tds=
-	    "<td><input type='checkbox' class='cBox' value='"+row.id+"'></td>"+
-	    "<td id='workHourId'>"+row.workOrderId+"</td>"+
+	    "<td><input type='checkbox' id='workHourId' class='cBox' value='"+ row.id +"'></td>"+
+	    "<td id='workOrderId'>"+row.workOrderId+"</td>"+
 	    "<td>"+row.relatedProjectName+"</td>"+
 	    "<td>"+row.hours+"</td>"+
 	    "<td>"+row.principalUser+"</td>"+

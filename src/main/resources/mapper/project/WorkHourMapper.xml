@@ -16,7 +16,7 @@
 					1=1
 				</if>
 		</where>
-		order by h.id desc
+		order by h.modifiedTime desc
 		limit
 		#{startIndex},#{pageSize}
 	</select>
@@ -56,4 +56,16 @@
 			</choose>
 		</where>
 	</delete>
+	<select id="findObjectById" resultType="com.macrosan.pojo.WorkHour">
+		select hours,note from work_hours
+		<where>
+			id=#{id}
+		</where>
+	</select>
+	<update id="updateObject">
+		update work_hours set hours=#{workHour.hours},note=#{workHour.note},modifiedTime=now()
+		<where>
+			id=#{workHour.id}
+		</where>
+	</update>
 </mapper>

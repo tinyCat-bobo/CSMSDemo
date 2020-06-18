@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.macrosan.common.PageObject;
+import com.macrosan.pojo.WorkHour;
 import com.macrosan.service.WorkHourService;
 import com.macrosan.vo.SysResult;
 import com.macrosan.vo.WorkHourVo;
@@ -42,4 +43,21 @@ public class WorkHourController {
 		return SysResult.success(rows);
 	}
 	
+	/*
+	 * http://localhost:8100/workhours/doFindObjectById?id=6 
+	 */
+	@RequestMapping("doFindObjectById")
+	public SysResult doFindObjectById(Integer id) {
+		WorkHour workHour = workHourService.findWorkHourById(id);
+		return SysResult.success(workHour);
+	}
+	
+	/*
+	 * http://localhost:8100/workhours/doUpdateObject 
+	 */
+	@RequestMapping("doUpdateObject")
+	public SysResult deUpdateObject(WorkHour workHour) {
+		int row = workHourService.updateObject(workHour);
+		return SysResult.success(row);
+	}
 }

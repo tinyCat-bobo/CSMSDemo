@@ -275,7 +275,6 @@
 		}
 		//1.获取表单数据
 		var params = doGetEditFormData();
-		debugger;
 		console.log(params);
 		$.post(url, params, function(result) {
 			if (result.status == 200) {
@@ -289,7 +288,6 @@
 	//获取用户输入的数据
 	function doGetEditFormData() {
 		var id = ($(".box-title").text()=="添加工单")?null:$("#mainContentId").data("rowData").id
-		debugger;
 		var params = {
 			id : id,
 			name : $("#workOrderName").val(),

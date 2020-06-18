@@ -16,4 +16,6 @@ public interface WorkHourMapper {
 	int getRowCount(@Param("proName")String proName);
 	int saveObject(@Param("workHour")WorkHour workHour);
 	int deleteObjects(@Param("ids")Integer[] ids);
+	WorkHour findObjectById(@Param("id")Integer id);
+	int updateObject(@Param("workHour")WorkHour workHour);
 }
