@@ -21,5 +21,25 @@ public class WorkHourController {
 		PageObject<WorkHourVo> pageObject= workHourService.findObjects(proName,pageCurrent);
 		return SysResult.success(pageObject);
 	}
+	/*
+	 * http://localhost:8100/workorders/doSaveObject 
+	 */
+	@RequestMapping("doSaveObject")
+	public SysResult doSaveObject(WorkHourVo workHourVo,String relatedProjectName) {
+		int row = workHourService.saveObject(workHourVo,relatedProjectName);
+		if(row >= 1) {
+			return SysResult.success();
+		} else {
+			return SysResult.fail();
+		}
+	}
+	/*
+	 * workhours/doDeleteObjects 
+	 */
+	@RequestMapping("doDeleteObjects")
+	public SysResult doDelectObjects(Integer[] ids) {
+		int rows = workHourService.deleteObjects(ids);
+		return SysResult.success(rows);
+	}
 	
 }

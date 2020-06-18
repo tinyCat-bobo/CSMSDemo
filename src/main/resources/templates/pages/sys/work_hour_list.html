@@ -157,7 +157,7 @@
 	   if(!confirm("确定删除吗"))return;
 	   //4.执行异步删除操作
 	   //4.1定义删除的url
-	   var url="workorders/doDeleteObjects"
+	   var url="workhours/doDeleteObjects"
 	   //4.2定义删除参数
 	   var params={"ids":idArray.toString()}; //[1,2,3]--toString--->1,2,3
 	   //4.3发送异步请求执行删除
@@ -254,7 +254,7 @@
    function doCreateTds(row){
 	   var tds=
 	    "<td><input type='checkbox' class='cBox' value='"+row.id+"'></td>"+
-	    "<td id='workHourId'>"+row.id+"</td>"+
+	    "<td id='workHourId'>"+row.workOrderId+"</td>"+
 	    "<td>"+row.relatedProjectName+"</td>"+
 	    "<td>"+row.hours+"</td>"+
 	    "<td>"+row.principalUser+"</td>"+

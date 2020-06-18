@@ -5,6 +5,7 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.macrosan.pojo.WorkHour;
 import com.macrosan.vo.WorkHourVo;
 
 @Mapper
@@ -13,4 +14,6 @@ public interface WorkHourMapper {
 								@Param("startIndex")Integer startIndex,
 								@Param("pageSize")Integer pageSize);
 	int getRowCount(@Param("proName")String proName);
+	int saveObject(@Param("workHour")WorkHour workHour);
+	int deleteObjects(@Param("ids")Integer[] ids);
 }

@@ -51,7 +51,7 @@ public class ProjectController {
 	}
 	
 	@RequestMapping("doFindProByName")
-	public SysResult doFindObjectById(String proName) {
+	public SysResult doFindObjectByName(String proName) {
 		List<Project> projectList = projectService.findObjectByName(proName);
 		if(projectList.size() > 0) {
 			return SysResult.success(projectList);
