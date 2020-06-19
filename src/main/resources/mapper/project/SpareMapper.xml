@@ -12,6 +12,14 @@
 	<select id="getRowCount" resultType="int">
 		select count(*) from spare_address
 	</select>
+	<select id="getSpareRowCount" resultType="int">
+		select count(*) from spare_list
+		<where>
+			<if test="proName != null and proName != ''">
+				workOrderId in ((select id from work_orders where relatedProject=#{proName}))
+			</if>
+		</where>
+	</select>
 	<insert id="saveSpareAddress">
 		insert into spare_address (id,address,note,createdTime,modifiedTime)
 		value
@@ -34,4 +42,24 @@
 		update spare_address set address=#{address.address},note=#{address.note},modifiedTime=now()
 		where id=#{address.id}
 	</update>
+	<select id="getAllSpareAddressAsJSON" resultType="com.macrosan.pojo.SpareAddress">
+		select id,address from spare_address
+	</select>
+	<insert id="saveSpareObject">
+		insert into spare_list
+		(id,workOrderId,recipients,phone,address,materialsCode,materialsName,materialsNum,materialsNote,createdTime,modifiedTime)
+		value
+		(null,#{spare.workOrderId},#{spare.recipients},#{spare.phone},#{spare.address},#{spare.materialsCode},#{spare.materialsName},
+		#{spare.materialsNum},#{spare.materialsNote},#{spare.createdTime},#{spare.modifiedTime})
+	</insert>
+	<select id="findSpareObjects" resultType="com.macrosan.pojo.Spare">
+		select id,workOrderId,recipients,phone,address,materialsCode,materialsName,materialsNum,materialsNote,createdTime,modifiedTime from spare_list
+		<where>
+			<if test="proName != null and proName != ''">
+				workOrderId in ((select id from work_orders where relatedProject=#{proName}))
+			</if>
+		</where>
+		order by modifiedTime desc
+		limit #{startIndex},#{pageSize}	
+	</select>
 </mapper>	

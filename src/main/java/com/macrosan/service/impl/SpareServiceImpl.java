@@ -1,5 +1,6 @@
 package com.macrosan.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,8 @@ import org.springframework.util.StringUtils;
 import com.macrosan.common.PageObject;
 import com.macrosan.common.exception.ServiceException;
 import com.macrosan.mapper.SpareMapper;
+import com.macrosan.pojo.Project;
+import com.macrosan.pojo.Spare;
 import com.macrosan.pojo.SpareAddress;
 import com.macrosan.service.SpareService;
 
@@ -79,6 +82,56 @@ public class SpareServiceImpl implements SpareService {
 			throw new ServiceException("记录更新失败");
 		}
 		return row;
+	}
+
+	@Override
+	public List<SpareAddress> getAllAddress() {
+		List<SpareAddress> addressList = spareMapper.getAllSpareAddressAsJSON();
+		if(addressList.size() <= 0) {
+			throw new ServiceException("未查询到相关记录");
+		}
+		return addressList;
+	}
+
+	@Override
+	public int saveSpareObject(Spare spare) {
+		//参数校验
+		if(StringUtils.isEmpty(spare.getWorkOrderId())) {
+			throw new IllegalArgumentException("关联工单信息不能为空");
+		}
+		if(StringUtils.isEmpty(spare.getRecipients()) || StringUtils.isEmpty(spare.getPhone()) || StringUtils.isEmpty(spare.getAddress())) {
+			throw new IllegalArgumentException("收件人信息不能为空");
+		}
+		if(StringUtils.isEmpty(spare.getMaterialsCode()) || StringUtils.isEmpty(spare.getMaterialsName()) || StringUtils.isEmpty(spare.getMaterialsNum())) {
+			throw new IllegalArgumentException("申请物料信息不能为空");
+		}
+		spare.setCreatedTime(new Date()).setModifiedTime(new Date());
+		int row = spareMapper.saveSpareObject(spare);
+		if(row > 0) {
+			return row;
+		} else {
+			throw new ServiceException("备件单信息保存失败");
+		}
+		
+	}
+
+	@Override
+	public PageObject<Spare> findSpareList(String proName, Integer pageCurrent) {
+		if(pageCurrent == null || pageCurrent < 1) throw new IllegalArgumentException("当前页码不正确");
+		int rowCount = spareMapper.getSpareRowCount(proName);
+		if(rowCount == 0) {
+			throw new ServiceException("未找到相关记录");
+		};
+		int pageSize = 5;
+		int startIndex = (pageCurrent-1)*pageSize;
+		List<Spare> projectsList = spareMapper.findSpareObjects(proName,startIndex,pageSize);
+		PageObject<Spare> pageobject = new PageObject<>();
+		pageobject.setPageCurrent(pageCurrent)
+				.setPageSize(pageSize)
+				.setRecords(projectsList)
+				.setRowCount(rowCount)
+				.setPageCount((rowCount-1)/pageSize+1);
+		return pageobject;
 	}
 
 }

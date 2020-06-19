@@ -8,11 +8,6 @@
       <!-- form start -->
 	<form class="form-horizontal">
 		<div class="box-body bodyUp1">
-			<div class="form-group">
-				<div class="col-sm-12">
-					<input type="text" class="form-control input-sm" readonly="readonly" placeholder="工单信息">
-				</div>
-			</div>
 			<table class="table table-bordered">
 				<tbody>
 					<tr>
@@ -35,28 +30,21 @@
 	<hr>
 	<form class="form-horizontal">
 		<div class="box-body bodyUp2">
-			<div class="form-group">
-				<div class="col-sm-12">
-					<input type="text" class="form-control input-sm" readonly="readonly" placeholder="收件人信息">
-				</div>
-			</div>
 			<table class="table table-bordered">
 				<tbody>
 					<tr>
 						<td><label for="" class="col-sm-4 control-label">联系人</label></td>
-						<td><input type="text" class="form-control input-sm"></td>
+						<td><input type="text" class="form-control input-sm" id="recipients"></td>
 					</tr>
 					<tr>
 						<td><label for="" class="col-sm-4 control-label">联系电话</label></td>
-						<td><input type="text" class="form-control input-sm"></td>
+						<td><input type="text" class="form-control input-sm" id="phone"></td>
 					</tr>
 					<tr>
 						<td><label for="" class="col-sm-4 control-label">收件地址</label></td>
 						<td>
-							<select class="form-control">
-								<option id="setSpareAddress">从备件地址中选择1</option>
-								<option id="setSpareAddress">从备件地址中选择2</option>
-								<option id="setSpareAddress">从备件地址中选择3</option>
+							<select class="form-control input-sm" id="setSpareAddress">
+								<!-- 设置备件地址选项 -->
 							</select>
 						</td>
 					</tr>
@@ -68,35 +56,30 @@
 	<hr>
 	<form class="form-horizontal">
 		<div class="box-body bodyUp3">
-			<div class="form-group">
-				<div class="col-sm-12">
-					<input type="text" class="form-control input-sm" readonly="readonly" placeholder="申请备件信息">
-				</div>
-			</div>
 			<table class="table table-bordered">
 				<tbody>
 					<tr>
 						<td><label for="" class="col-sm-4 control-label">物料编码</label></td>
 						<td>
-							<input type="text" class="form-control input-sm">
+							<input type="text" class="form-control input-sm" id="materialsCode">
 						</td>
 					</tr>
 					<tr>
 						<td><label for="" class="col-sm-4 control-label">物料名称</label></td>
 						<td>
-							<input type="text" class="form-control input-sm">
+							<input type="text" class="form-control input-sm" id="materialsName">
 						</td>
 					</tr>
 					<tr>
 						<td><label for="" class="col-sm-4 control-label">数量</label></td>
 						<td>
-							<input type="text" class="form-control input-sm">
+							<input type="text" class="form-control input-sm" id="materialsNum">
 						</td>
 					</tr>
 					<tr>
 						<td><label for="" class="col-sm-4 control-label">备注</label></td>
 						<td>
-							<textarea class="form-control input-sm" id="addressNoteEdit" name="spareAddressNoteEdit" />
+							<textarea class="form-control input-sm" id="materialsNote" name="spareNoteEdit" />
 						</td>
 					</tr>
 				</tbody>
@@ -166,11 +149,32 @@
 	$(document).ready(function(){
 	 	//工单信息回显函数
 	 	doInitFormData();
+	 	//寄件地址查询并回填
+	 	doInitSpareAddressData();
 	 	//事件注册
 	 	$(".box-footer")
 	 	.on("click",".btn-cancel",doCancel)
-	 	.on("click",".btn-save",doSaveOrUpdateObject);
+	 	.on("click",".btn-save",doSaveObject);
  	});
+	//寄件地址查询并回填
+	function doInitSpareAddressData(){
+		var url = "spares/doGetAllSpareAddress";
+		$.getJSON(url,function(result){
+			if(result.status == 200){
+				//设置地址信息回显
+				doSetAddressToCheckbox(result.data);
+			}else {
+				alert(result.msg);
+			}
+		});
+	}
+	//备件地址回显
+	function doSetAddressToCheckbox(result){
+		for(let i = 0;i<result.length;i++){
+			var option = `<option>${result[i].address}</option>`;
+			$("#setSpareAddress").append(option);
+		}
+	}
  	//工单信息回显
  	function doInitFormData(){
  		//获取回传的工单信息
@@ -262,39 +266,35 @@
 		$("#searchPro").val("");
 	}
 	function doCancel() {
-		$("#mainContentId").removeData("workHourData");
-		$("#mainContentId").load("workhours/work_hour_list");
+		$("#mainContentId").removeData("workHourData");		//?数据不明确
+		$("#mainContentId").load("spares/spare_list");
 	}
-	function doSaveOrUpdateObject() {
-		var actionType = $(".box-title").text();
-		//判断页面动作(添加/更新)
-		if(actionType == "添加工时"){
-			var url = "workhours/doSaveObject";
-		}else if(actionType == "修改工时"){
-			var url = "workhours/doUpdateObject";
-		}
+	//保存备件申请单信息
+	function doSaveObject() {
+		var url = "spares/doSaveObject";
 		//1.获取表单数据
 		var params = doGetEditFormData();
 		console.log(params);
 		$.post(url, params, function(result) {
 			if (result.status == 200) {
-				//console.log(result.msg);
 				doCancel();
 			} else {
 				alert(result.msg);
 			}
 		})
 	}
-	//获取用户输入的数据
+	//获取用户输入的备件信息数据
 	function doGetEditFormData() {
-		var id = ($(".box-title").text()=="添加工时")?null:$("#mainContentId").data("workHourId");
 		var params = {
-			id : id,
-			workOrderId : $(".box-title").data("orderIdSelected"),
-			relatedProjectName : $("#workHourOrder").val(),
-			hours : $("#workHour").val(),
-			principalUser : $("#workOrderFZ").val(),
-			note : $("#workHourNote").val()
+			id : null,
+			workOrderId : $("#workHourId").val(),
+			recipients : $("#recipients").val(),
+			phone : $("#phone").val(),
+			address : $("#setSpareAddress").val(),
+			materialsCode : $("#materialsCode").val(),
+			materialsName : $("#materialsName").val(),
+			materialsNum : $("#materialsNum").val(),
+			materialsNote : $("#materialsNote").val(),
 		}
 		return params;
 	}
