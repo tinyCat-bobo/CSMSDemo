@@ -134,4 +134,16 @@ public class SpareServiceImpl implements SpareService {
 		return pageobject;
 	}
 
+	@Override
+	public int deleteSpareObjects(Integer[] ids) {
+		if(ids.length < 1 || ids == null) {
+			throw new IllegalArgumentException("ID参数不合法");
+		}
+		int rows = spareMapper.deleteSpareObjects(ids);
+		if(rows == 0) {
+			throw new ServiceException("记录可能已经不存在");
+		}
+		return rows;
+	}
+
 }

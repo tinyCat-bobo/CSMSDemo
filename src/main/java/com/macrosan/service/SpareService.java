@@ -15,4 +15,5 @@ public interface SpareService {
 	List<SpareAddress> getAllAddress();
 	int saveSpareObject(Spare spare);
 	PageObject<Spare> findSpareList(String proName, Integer pageCurrent);
+	int deleteSpareObjects(Integer[] ids);
 }

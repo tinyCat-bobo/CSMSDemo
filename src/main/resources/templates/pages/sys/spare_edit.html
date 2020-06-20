@@ -219,19 +219,27 @@
 			var tr = `<tr>
 					<td>${i+1}</td>
 					<td onclick='getSelectOrder(this)' value=${orderInfoArray[i].name} orderIdSelected=${orderInfoArray[i].id}
-						orderFZSelected=${orderInfoArray[i].principalUser}>${orderInfoArray[i].name}</td>
+						orderFZSelected=${orderInfoArray[i].principalUser} orderStatus=${orderInfoArray[i].status}>${orderInfoArray[i].name}</td>
 					</tr>`;
 			tbody.append(tr);
 			//将查询到的信息绑定至box-title
 			$(".box-title").data("orderNameSelected",orderInfoArray[i].name);
 			$(".box-title").data("orderIdSelected",orderInfoArray[i].id);
 			$(".box-title").data("orderFZSelected",orderInfoArray[i].principalUser);
+			$(".box-title").data("orderStatus",orderInfoArray[i].status);
 		}
 	}
 	//点击模态框中查询到的项目,即可选中
 	function getSelectOrder(result){
 		var id = result.attributes[2].value;
 		var FZ = result.attributes[3].value;
+		var status = result.attributes[4].value;
+		if(status == "关闭"){
+			//假如工单已经关闭,则不允许申请备件
+			alert("工单已经关闭,请重新创建工单后申请备件");
+			$("#workHourModal").modal("hide");
+			return;
+		}
 		var orderNameSelected = result.innerHTML;
 		$("#workHourOrder").val(orderNameSelected);
 		$("#workHourId").val(id);
@@ -254,6 +262,13 @@
 		var orderNameSelected = $(".box-title").data("orderNameSelected");
 		var orderIdSelected = $(".box-title").data("orderIdSelected");
 		var orderFZSelected = $(".box-title").data("orderFZSelected");
+		var orderStatus = $(".box-title").data("orderStatus");
+		if(orderStatus == "关闭"){
+			//假如工单已经关闭,则不允许申请备件
+			alert("工单已经关闭,请重新创建工单后申请备件");
+			$("#workHourModal").modal("hide");
+			return;
+		}
 		$("#workHourOrder").val(orderNameSelected);
 		$("#workHourId").val(orderIdSelected);
 		$("#workOrderFZ").val(orderFZSelected);

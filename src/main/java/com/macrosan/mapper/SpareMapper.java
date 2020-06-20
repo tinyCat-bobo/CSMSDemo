@@ -20,4 +20,5 @@ public interface SpareMapper {
 	int saveSpareObject(@Param("spare")Spare spare);
 	int getSpareRowCount(String proName);
 	List<Spare> findSpareObjects(@Param("proName")String proName, @Param("startIndex")int startIndex, @Param("pageSize")int pageSize);
+	int deleteSpareObjects(@Param("ids")Integer[] ids);
 }

@@ -18,7 +18,7 @@ public class User extends BasePojo {
 	private String password;
 	private String salt;
 	private Integer superiorId;
-	private Integer mobile;
+	private String mobile;
 	private Boolean valid;
 	private String deptName;
 }

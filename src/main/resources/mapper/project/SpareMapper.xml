@@ -62,4 +62,21 @@
 		order by modifiedTime desc
 		limit #{startIndex},#{pageSize}	
 	</select>
+	<delete id="deleteSpareObjects">
+		delete from spare_list
+		<where>
+			<choose>
+				<when test="ids!=null and ids.length>=1">
+					id in(
+					<foreach collection="ids" item="id" separator=",">
+						#{id}
+					</foreach>
+					)
+				</when>
+				<otherwise>
+					1=2
+				</otherwise>
+			</choose>
+		</where>
+	</delete>
 </mapper>	

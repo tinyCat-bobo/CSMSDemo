@@ -66,9 +66,10 @@ public class SpareController {
 		return SysResult.success(pageObject);
 	}
 	//http://localhost:8100/spares/doDeleteObjects
-	public SysResult doDeleteSpareObject(Integer id) {
-		//TODO
-		return null;
+	@RequestMapping("doDeleteObjects")
+	public SysResult doDeleteSpareObject(Integer[] ids) {
+		int rows = spareService.deleteSpareObjects(ids);
+		return SysResult.success(rows);
 	}
 	
 }

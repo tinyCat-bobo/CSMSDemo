@@ -211,7 +211,7 @@
 	   if(!pageCurrent)pageCurrent=1;
 	   var params={"pageCurrent":pageCurrent}
 	   //获取查询时参数username的值(可能有值，也可能没有值)
-	   var proName=$("#searchNameId").val();
+	   var proName=$("#searchNameId").val().trim();
 	   //假如orderName有值，则将key:value添加到params对象中,这里的key需要与控制器方法参数相同
 	   if(proName)params.proName=proName;
 	   //2.定义请求url
