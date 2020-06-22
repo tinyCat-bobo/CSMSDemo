@@ -145,7 +145,6 @@
  //TODO
  function doSaveOrUpdate(){
 	 //判断用户动作(创建用户/修改用户)
-	 debugger;
 	 var actionType = $(".box-title").text();
 	 //1.获取表单数据
 	 var params=doGetEditFormData();
@@ -171,7 +170,8 @@
 	    password:$("#passwordId").val(),
 	    deptName:$("#deptName").val(),
 	    mobile:$("#phoneId").val(),
-	    superiorId:$("#superiorId").data("superiorId")
+	    superiorId:$("#superiorId").data("superiorId"),
+	    valid:$("#userstatus").val()
 	 }
 	 //获取选择的角色
 	 var roleIds=new Array();

@@ -1,15 +1,21 @@
 package com.macrosan.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.macrosan.common.utils.ShiroUtils;
+import com.macrosan.pojo.User;
 
 @Controller
 @RequestMapping("/")
 public class PageController {
-
+	
 	@RequestMapping("")
-	public String doIndexUI() {
+	public String doIndexUI(Model model) {
+		User user = ShiroUtils.getUser();
+		model.addAttribute("user", user);
 		return "starter";
 	}
 	
@@ -23,5 +29,10 @@ public class PageController {
 	@RequestMapping("doPageUI")
 	public String doPageUI() {
 		return "/common/page";
+	}
+	//加载登录页面
+	@RequestMapping("doLoginUI")
+	public String doLoginUI() {
+		return "login";
 	}
 }

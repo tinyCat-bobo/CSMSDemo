@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>AdminLTE 2 | Log in</title>
+  <title>CSMS | Log in</title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <!-- Bootstrap 3.3.7 -->
@@ -25,38 +25,47 @@
   <![endif]-->
 
   <!-- Google Font -->
+  <!-- 设置登录页面背景图片 -->
+  <!-- 登录选项靠右显示 -->
+  <style type="text/css">
+	.login-page {
+		background: url("/imgs/backimg/login1.jpg") no-repeat center center fixed;
+		background-size: cover;
+	}
+	.login-box {
+		margin: 10% 65%;
+	}
+</style>
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
   <div class="login-logo">
-    <a href="#"><b>DB-</b>SYS</a>
+    <a href="#"><b>欢迎-登录</b></a>
   </div>
   <!-- /.login-logo -->
   <div class="login-box-body">
-    <p class="login-box-msg">Sign in to start your session</p>
-
-    <form method="post">
+    <p class="login-box-msg">请登录您的账户</p>
+    <form method="post" class="loginForm">
       <div class="form-group has-feedback">
-        <input type="text" id="usernameId" name="username" class="form-control" placeholder="username">
+        <input type="text" id="usernameId" name="username" class="form-control" placeholder="用户名">
         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
       </div>
       <div class="form-group has-feedback">
-        <input type="password" id="passwordId" name="password" class="form-control" placeholder="Password">
+        <input type="password" id="passwordId" name="password" class="form-control" placeholder="密码">
         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
       </div>
      
-
       <div class="row">
         <div class="col-xs-8">
           <div class="checkbox icheck">
             <label>
-              <input type="checkbox" id="rememberId"> Remember Me
+              <input type="checkbox" id="rememberId"> 记住我
             </label>
           </div>
         </div>
         <!-- /.col -->
         <div class="col-xs-4">
-          <button type="button" class="btn btn-primary btn-block btn-flat btn-login">Sign In</button>
+          <button type="button" class="btn btn-primary btn-block btn-flat btn-login">登录</button>
         </div>
         <!-- /.col -->
       </div>
@@ -89,15 +98,15 @@
 		 password:$("#passwordId").val(),
 		 isRememberMe:$("#rememberId").prop("checked"),
 	  }
-	  var url="user/doLogin";
+	  var url="users/doLogin";
 	  console.log("params",params);
 	  $.post(url,params,function(result){
 		  console.log("login.result",result);
-		  if(result.state==1){
+		  if(result.status == 200){
 			//跳转到indexUI对应的页面
-			location.href="doIndexUI?t="+Math.random();
+			location.href="/?t="+Math.random();
 		  }else{
-			$(".login-box-msg").html(result.message); 
+			$(".login-box-msg").html(result.msg); 
 		  }
 		  return false;//防止刷新时重复提交
 	  });

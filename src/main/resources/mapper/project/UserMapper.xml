@@ -43,4 +43,17 @@
 		select * from csms_users
 		where id=#{id}
 	</select>
+	<update id="updateUserInfo">
+		update csms_users set username=#{user.username},mobile=#{user.mobile},valid=#{user.valid},deptName=#{user.deptName},
+		modifiedTime=#{user.modifiedTime}
+		<if test="user.superiorId!=null and user.superiorId>0">
+			,superiorId=#{user.superiorId}
+		</if>
+		<where>
+			id=#{user.id}
+		</where>
+	</update>
+	<select id="findUserByUserName" resultType="com.macrosan.pojo.User">
+		select * from csms_users where username=#{username}
+	</select>
 </mapper>

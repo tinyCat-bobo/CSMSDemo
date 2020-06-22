@@ -2,6 +2,9 @@ package com.macrosan.controller;
 
 import java.util.List;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -55,5 +58,29 @@ public class UserController {
 		List<UserRole> userRole = userService.getUserRolesById(id);
 		return SysResult.success(userRole);
 	}
+	//http://localhost:8100/users/doUpdateObject
+	@RequestMapping("doUpdateObject")
+	public SysResult doUpdateUserPW(User user,Integer[] roleIds) {
+		int row = userService.updateUserInfo(user,roleIds);
+		return SysResult.success();
+	}
 	
+	//////////////////////////////////////////////////////////////////
+	//users/doLogin
+	@RequestMapping("doLogin")
+	public SysResult doLogin(String username,String password) {
+		//1.获取Subject对象
+		Subject subject = SecurityUtils.getSubject();
+		//2.通过Subject对象传递用户登录信息
+		//封装用户token信息
+		UsernamePasswordToken token = new UsernamePasswordToken(username, password);
+		subject.login(token);	//对用户信息进行身份认证
+		/*
+		 * shiro认证流程
+		 * token会传递给SecurityManager
+		 * SecurityManager将token传递给认证管理器
+		 * 认证管理器传递给Realm
+		 */
+		return SysResult.success("login ok!");
+	}
 }

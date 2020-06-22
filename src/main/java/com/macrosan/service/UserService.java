@@ -14,4 +14,5 @@ public interface UserService {
 	int deleteUserObject(Integer id);
 	User findUserById(Integer id);
 	List<UserRole> getUserRolesById(Integer id);
+	int updateUserInfo(User user, Integer[] roleIds);
 }

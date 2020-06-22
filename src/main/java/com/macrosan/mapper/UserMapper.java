@@ -19,4 +19,6 @@ public interface UserMapper {
 	int saveUserObject(@Param("user")User user);
 	int deleteUserObject(@Param("id")Integer id);
 	User findUserById(@Param("id")Integer id);
+	int updateUserInfo(@Param("user")User user);
+	User findUserByUserName(@Param("username")String username);
 }

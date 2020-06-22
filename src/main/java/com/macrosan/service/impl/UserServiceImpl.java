@@ -1,11 +1,13 @@
 package com.macrosan.service.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.shiro.crypto.hash.SimpleHash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.macrosan.common.PageObject;
@@ -49,6 +51,7 @@ public class UserServiceImpl implements UserService {
 		return userRole;
 	}
 
+	@Transactional
 	@Override
 	public int saveUserObject(User user, Integer[] roleIds) {
 		//参数校验
@@ -79,6 +82,7 @@ public class UserServiceImpl implements UserService {
 		return row;
 	}
 
+	@Transactional
 	@Override
 	public int deleteUserObject(Integer id) {
 		if(id == null || id < 1) {
@@ -115,5 +119,28 @@ public class UserServiceImpl implements UserService {
 			throw new ServiceException("未找到相关角色信息");
 		}
 		return userRole;
+	}
+	@Transactional		//开启事物控制
+	@Override
+	public int updateUserInfo(User user, Integer[] roleIds) {
+		//参数校验
+		if(StringUtils.isEmpty(user.getUsername())) {
+			throw new IllegalArgumentException("用户名不能为空");
+		}
+		if(StringUtils.isEmpty(user.getDeptName())) {
+			throw new IllegalArgumentException("用户部门不能为空");
+		}
+		if(roleIds.length == 0 || roleIds == null) {
+			throw new IllegalArgumentException("用户角色不能为空");
+		}
+		user.setModifiedTime(new Date());
+		int row = userMapper.updateUserInfo(user);
+		//更新用户角色信息时,先删除原始角色信息,再插入新的角色信息
+		userRoleMapper.deleteUserRole(user.getId());	
+		userRoleMapper.saveUserRole(user.getId(),roleIds);
+		if(row == 0) {
+			throw new ServiceException("用户信息更新失败");
+		}
+		return row;
 	}
 }
