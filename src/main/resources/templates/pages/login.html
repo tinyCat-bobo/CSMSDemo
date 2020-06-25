@@ -92,11 +92,11 @@
     $(".btn").click(doLogin);
   });
   function doLogin(){
-	 
+	  debugger;
 	  var params={
 		 username:$("#usernameId").val(),
 		 password:$("#passwordId").val(),
-		 isRememberMe:$("#rememberId").prop("checked"),
+		 isRememberMe:$("#rememberId").prop("checked")
 	  }
 	  var url="users/doLogin";
 	  console.log("params",params);

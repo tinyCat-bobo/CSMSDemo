@@ -115,35 +115,16 @@ desired effect
             </a>
             <ul class="dropdown-menu">
               <!-- The user image in the menu -->
-              <li class="user-header">
-                <!-- <img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image"> -->
+              <li class="user-header" style="height: 75px;">
                 <p>
-                  Alexander Pierce - Web Developer
-                  <small>Member since Nov. 2012</small>
+                  	角色
+                  <small id="userRoleInfo">-----------------</small>
                 </p>
-              </li>
-              <!-- Menu Body -->
-              <li class="user-body">
-                <div class="row">
-                  <div class="col-xs-4 text-center">
-                    <a href="#">Followers</a>
-                  </div>
-                  <div class="col-xs-4 text-center">
-                    <a href="#">Sales</a>
-                  </div>
-                  <div class="col-xs-4 text-center">
-                    <a href="#">Friends</a>
-                  </div>
-                </div>
-                <!-- /.row -->
               </li>
               <!-- Menu Footer-->
               <li class="user-footer">
-                <div class="pull-left">
-                  <a href="#" class="btn btn-default btn-flat">Profile</a>
-                </div>
                 <div class="pull-right">
-                  <a href="doLogout" class="btn btn-default btn-sign-out">Sign out</a>
+                  <a href="doLogout" class="btn btn-default btn-sign-out">注销</a>
                 </div>
               </li>
             </ul>
@@ -378,22 +359,44 @@ desired effect
     	  doLoadUI("load-spare_address-id","spare_address/spare_address_list");					//备件地址清单
     	  doLoadUI("load-user-id","user/user_list");											//管理用户
     	  doLoadUI("load-pwd-id","pwd/pwd_edit");												//修改密码
-      });
-      
-      function doLoadUI(id,url){
-    	  //var dom=document.getElementById(id);
-    	  //dom.onclick=function(){
-    		//  $("#mainContentId").load(url); 
-    	  //}
-    	  $("#"+id).click(function(){//事件处理函数
-    		  //console.log("====");
-    		  //load函数为一个jquery中的ajax函数,其作用是将url对应的资源，异步加载到指定位置
-    		  //此处表示在mainContentId对应的对象位置异步加载url指定资源
-    		  $("#mainContentId").load(url); 
-    	  }) 
-      }
-      
+    	  
+    	//登录成功后,异步查询用户角色
+		var userRole = [];
+		$.ajax({
+			type : "GET",
+			url : "users/doGetUserRoleById",
+			data : {
+				id : [[${user.id}]]
+			},
+			success : function(result) {
+				if (result.status == 200) {
+					//遍历获得的角色数据
+					for (let i = 0; i < result.data.length; i++) {
+						userRole.push("-");
+						userRole.push(result.data[i].roleName);
+						userRole.push("-");
+					}
+					$("#userRoleInfo").html(userRole);
+				} else {
+					alert(result.msg);
+				}
+			},
+			async : true
+		});
+	});
 
+	function doLoadUI(id, url) {
+		//var dom=document.getElementById(id);
+		//dom.onclick=function(){
+		//  $("#mainContentId").load(url); 
+		//}
+		$("#" + id).click(function() {//事件处理函数
+			//console.log("====");
+			//load函数为一个jquery中的ajax函数,其作用是将url对应的资源，异步加载到指定位置
+			//此处表示在mainContentId对应的对象位置异步加载url指定资源
+			$("#mainContentId").load(url);
+		})
+	}
 </script>
 </body>
 </html>

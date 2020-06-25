@@ -56,4 +56,8 @@
 	<select id="findUserByUserName" resultType="com.macrosan.pojo.User">
 		select * from csms_users where username=#{username}
 	</select>
+	<update id="updateUserPassword">
+		update csms_users set salt=#{salt},password=#{newHexPW},modifiedTime=now()
+		where id=#{id}
+	</update>
 </mapper>

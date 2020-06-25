@@ -53,15 +53,15 @@
 	              cfgPwd:$("#cfgPwdId").val()
 	   }
 	   //2.定义请求的url
-	   var url="user/doUpdatePassword"
+	   var url="users/doUpdatePassword"
 	   //3.异步提交请求,执行更新操作
 	   $.post(url,params,function(result){
-		    if(result.state==1){
-			 alert(result.message);
+		    if(result.status == 200){
+			 alert(result.msg);
 			//location.href="doLoginUI?t="+Math.random();
 			 location.href="doLogout?t="+Math.random();
 		    }else{
-			 alert(result.message);
+			 alert(result.msg);
 		    }
 	   })
    }

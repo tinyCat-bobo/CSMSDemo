@@ -4,7 +4,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.crypto.hash.SimpleHash;
+import org.apache.shiro.crypto.hash.SimpleHashRequest;
+import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,6 +55,7 @@ public class UserServiceImpl implements UserService {
 		return userRole;
 	}
 
+	@RequiresPermissions("sys:admin")
 	@Transactional
 	@Override
 	public int saveUserObject(User user, Integer[] roleIds) {
@@ -82,6 +87,7 @@ public class UserServiceImpl implements UserService {
 		return row;
 	}
 
+	@RequiresPermissions("sys:admin")
 	@Transactional
 	@Override
 	public int deleteUserObject(Integer id) {
@@ -120,6 +126,8 @@ public class UserServiceImpl implements UserService {
 		}
 		return userRole;
 	}
+	
+	@RequiresPermissions("sys:admin")
 	@Transactional		//开启事物控制
 	@Override
 	public int updateUserInfo(User user, Integer[] roleIds) {
@@ -141,6 +149,35 @@ public class UserServiceImpl implements UserService {
 		if(row == 0) {
 			throw new ServiceException("用户信息更新失败");
 		}
+		return row;
+	}
+
+	@Override
+	public int updateUserPassword(String pwd, String newPwd, String cfgPwd) {
+		//参数校验,输入的新密码和确认面是否一致
+		if(StringUtils.isEmpty(pwd)) {
+			throw new IllegalArgumentException("原密码不能为空");
+		}
+		if(StringUtils.isEmpty(newPwd)) {
+			throw new IllegalArgumentException("新密码不能为空");
+		}
+		if(StringUtils.isEmpty(cfgPwd)) {
+			throw new IllegalArgumentException("确认密码不能为空");
+		}
+		if(!newPwd.equals(cfgPwd)) {
+			throw new IllegalArgumentException("两次输入的密码不一致");
+		}
+		//获取用户的密码信息与输入的原密码进行比较
+		User user = (User) SecurityUtils.getSubject().getPrincipal();
+		//对输入的原始密码加密后与用户密码进行比较
+		SimpleHash sh = new SimpleHash("MD5", pwd, user.getSalt(), 1);
+		if(!user.getPassword().equals(sh.toHex()))throw new IllegalArgumentException("输入的原密码不正确");
+		//如果输入的原密码匹配,将新密码加密后更新到数据库
+		String salt = UUID.randomUUID().toString();
+		SimpleHash newSh = new SimpleHash("MD5", newPwd, salt, 1);
+		String newHexPW = newSh.toHex();
+		int row = userMapper.updateUserPassword(user.getId(),salt,newHexPW);
+		if(row==0)throw new ServiceException("密码更新失败"); 
 		return row;
 	}
 }

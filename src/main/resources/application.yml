@@ -16,6 +16,9 @@ spring:
     prefix: classpath:/templates/pages/
     suffix: .html
     cache: false
+  aop:
+    proxy-target-class: true
+    
 #mybatis
 mybatis:
   configuration:

@@ -21,4 +21,8 @@ public interface UserMapper {
 	User findUserById(@Param("id")Integer id);
 	int updateUserInfo(@Param("user")User user);
 	User findUserByUserName(@Param("username")String username);
+	int updateUserPassword(
+			@Param("id")Integer id,
+			@Param("salt")String salt, 
+			@Param("newHexPW")String newHexPW);
 }

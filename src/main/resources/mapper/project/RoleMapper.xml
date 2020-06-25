@@ -6,4 +6,12 @@
 	<select id="getAllRoles" resultType="com.macrosan.pojo.Role">
 		select id,name,note,createdTime,modifiedTime from csms_roles
 	</select>
+	<select id="getPermissionsByRoleIds" resultType="string">
+		select permission from csms_roles
+		<where>
+			<foreach collection="ids" item="id" separator="or">
+				id=#{id}
+			</foreach>
+		</where>
+	</select>
 </mapper>

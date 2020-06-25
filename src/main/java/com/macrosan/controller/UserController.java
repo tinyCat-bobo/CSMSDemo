@@ -68,12 +68,13 @@ public class UserController {
 	//////////////////////////////////////////////////////////////////
 	//users/doLogin
 	@RequestMapping("doLogin")
-	public SysResult doLogin(String username,String password) {
+	public SysResult doLogin(String username,String password,boolean isRememberMe) {
 		//1.获取Subject对象
 		Subject subject = SecurityUtils.getSubject();
 		//2.通过Subject对象传递用户登录信息
 		//封装用户token信息
 		UsernamePasswordToken token = new UsernamePasswordToken(username, password);
+		if(isRememberMe) {token.setRememberMe(true);}
 		subject.login(token);	//对用户信息进行身份认证
 		/*
 		 * shiro认证流程
@@ -82,5 +83,12 @@ public class UserController {
 		 * 认证管理器传递给Realm
 		 */
 		return SysResult.success("login ok!");
+	}
+	
+	//user/doUpdatePassword
+	@RequestMapping("doUpdatePassword")
+	public SysResult doUpdatePassword(String pwd,String newPwd,String cfgPwd) {
+		int row = userService.updateUserPassword(pwd,newPwd,cfgPwd);
+		return SysResult.success("密码修改成功");
 	}
 }

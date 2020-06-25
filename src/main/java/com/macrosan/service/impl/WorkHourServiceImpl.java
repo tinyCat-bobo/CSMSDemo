@@ -3,6 +3,7 @@ package com.macrosan.service.impl;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -41,6 +42,7 @@ public class WorkHourServiceImpl implements WorkHourService {
 		return pageObject;
 	}
 
+	@RequiresPermissions("sys:engineer")
 	@Override
 	public int saveObject(WorkHourVo workHourVo, String relatedProjectName) {
 		if (StringUtils.isEmpty(workHourVo.getWorkOrderId())
@@ -66,6 +68,7 @@ public class WorkHourServiceImpl implements WorkHourService {
 		return row;
 	}
 
+	@RequiresPermissions("sys:engineer")
 	@Override
 	public int deleteObjects(Integer[] ids) {
 		if (ids.length <= 0 || ids == null) {
@@ -90,6 +93,7 @@ public class WorkHourServiceImpl implements WorkHourService {
 		return workHour;
 	}
 
+	@RequiresPermissions("sys:engineer")
 	@Override
 	public int updateObject(WorkHour workHour) {
 		if(StringUtils.isEmpty(workHour.getId())) {

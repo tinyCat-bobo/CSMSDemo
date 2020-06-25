@@ -3,6 +3,7 @@ package com.macrosan.service.impl;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -39,6 +40,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
 		return pageObject;
 	}
 
+	@RequiresPermissions("sys:manager")
 	@Override
 	public int deleteObjects(Integer[] ids) {
 		if(ids.length <= 0 || ids == null) {
@@ -63,6 +65,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
 		return zTreeNodes;
 	}
 
+	@RequiresPermissions("sys:manager")
 	@Override
 	public int saveObject(WorkOrder workOrder) {
 		int row = 0;
@@ -98,6 +101,7 @@ public class WorkOrderServiceImpl implements WorkOrderService {
 		return workOrder;
 	}
 
+	@RequiresPermissions("sys:manager")
 	@Override
 	public int updateObject(WorkOrder workOrder) {
 		int row = 0;

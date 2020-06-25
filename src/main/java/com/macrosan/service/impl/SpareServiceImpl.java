@@ -3,14 +3,15 @@ package com.macrosan.service.impl;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.macrosan.common.PageObject;
 import com.macrosan.common.exception.ServiceException;
 import com.macrosan.mapper.SpareMapper;
-import com.macrosan.pojo.Project;
 import com.macrosan.pojo.Spare;
 import com.macrosan.pojo.SpareAddress;
 import com.macrosan.service.SpareService;
@@ -36,6 +37,7 @@ public class SpareServiceImpl implements SpareService {
 		return pageObject;
 	}
 
+	@RequiresPermissions("sys:engineer")
 	@Override
 	public int saveSpareAddress(SpareAddress spareAddress) {
 		if (spareAddress == null) {
@@ -48,6 +50,7 @@ public class SpareServiceImpl implements SpareService {
 		return row;
 	}
 
+	@RequiresPermissions("sys:engineer")
 	@Override
 	public int deleteSpareAddress(Integer id) {
 		if (id == null || id < 1) {
@@ -72,6 +75,7 @@ public class SpareServiceImpl implements SpareService {
 		return address;
 	}
 
+	@RequiresPermissions("sys:engineer")
 	@Override
 	public int updateSpareAddress(SpareAddress spareAddress) {
 		if(StringUtils.isEmpty(spareAddress.getId())) {
@@ -93,6 +97,7 @@ public class SpareServiceImpl implements SpareService {
 		return addressList;
 	}
 
+	@RequiresPermissions("sys:engineer")
 	@Override
 	public int saveSpareObject(Spare spare) {
 		//参数校验
@@ -134,6 +139,7 @@ public class SpareServiceImpl implements SpareService {
 		return pageobject;
 	}
 
+	@RequiresPermissions("sys:engineer")
 	@Override
 	public int deleteSpareObjects(Integer[] ids) {
 		if(ids.length < 1 || ids == null) {
@@ -145,5 +151,4 @@ public class SpareServiceImpl implements SpareService {
 		}
 		return rows;
 	}
-
 }

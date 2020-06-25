@@ -2,6 +2,7 @@ package com.macrosan.service.impl;
 
 import java.util.List;
 
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -35,7 +36,8 @@ public class ProjectServiceImpl implements ProjectService{
 				.setPageCount((rowCount-1)/pageSize+1);
 		return pageobject;
 	}
-
+	
+	@RequiresPermissions("sys:admin")			//需要管理员授权
 	@Override
 	public void saveObject(Project projet) {
 		//参数校验
@@ -48,6 +50,7 @@ public class ProjectServiceImpl implements ProjectService{
 		projectMapper.saveObject(projet);
 	}
 
+	@RequiresPermissions("sys:admin")			//需要管理员授权
 	@Override
 	public void deleteObject(Integer id) {
 		if(id == null || id < 1) {
@@ -68,6 +71,7 @@ public class ProjectServiceImpl implements ProjectService{
 		return project;
 	}
 
+	@RequiresPermissions("sys:admin")			//需要管理员授权
 	@Override
 	public int updateObject(Project project) {
 		if(project == null || StringUtils.isEmpty(project.getName())) {

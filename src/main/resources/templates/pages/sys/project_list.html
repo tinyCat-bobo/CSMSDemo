@@ -173,7 +173,7 @@
 			if (result.status == 200) {
 				doGetObjects(); //获取所有的项目信息
 			} else {
-				alert(result.message);
+				alert(result.msg);
 			}
 		});
 	}
@@ -194,9 +194,13 @@
 			"proWeihu" : projectStatus
 		};
 		$.post(url, params, function(result) {
-			doGetObjects(); //获取所有的项目信息
-			//清空输入框内容
-			doClear();
+			if(result.status==200){
+				doGetObjects(); //获取所有的项目信息
+				//清空输入框内容
+				doClear();
+			}else {
+				alert(result.msg);
+			}
 		});
 
 	}

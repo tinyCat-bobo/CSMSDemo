@@ -15,4 +15,5 @@ public interface UserService {
 	User findUserById(Integer id);
 	List<UserRole> getUserRolesById(Integer id);
 	int updateUserInfo(User user, Integer[] roleIds);
+	int updateUserPassword(String pwd, String newPwd, String cfgPwd);
 }
