@@ -17,7 +17,7 @@ spring:
     suffix: .html
     cache: false
   aop:
-    proxy-target-class: true
+    proxy-target-class: true                      # CGLIB动态代理
     
 #mybatis
 mybatis:

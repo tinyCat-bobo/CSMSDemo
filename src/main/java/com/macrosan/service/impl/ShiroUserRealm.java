@@ -61,7 +61,6 @@ public class ShiroUserRealm extends AuthorizingRealm {
 		//根据用户ID查询用户的角色
 		List<UserRole> userRoles = userRoleMapper.getUserRolesById(userId);
 		Integer[] roles = new Integer[userRoles.size()];
-		System.out.println(roles.length);
 		for (int i = 0;i<userRoles.size();i++) {
 			roles[i] = userRoles.get(i).getRole_id();
 		}
