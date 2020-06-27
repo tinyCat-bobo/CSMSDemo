@@ -10,6 +10,6 @@ public interface ProjectService {
 	void saveObject(Project projet);
 	void deleteObject(Integer id);
 	Project findObjectById(Integer id);
-	int updateObject(Project project);
+	Project updateObject(Project project);
 	List<Project> findObjectByName(String proName);
 }

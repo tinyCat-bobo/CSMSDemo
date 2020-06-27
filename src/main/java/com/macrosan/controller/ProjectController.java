@@ -65,11 +65,7 @@ public class ProjectController {
 	 */
 	@RequestMapping("doUpdateProject")
 	public SysResult doUpdateObject(Project project) {
-		int row = projectService.updateObject(project);
-		if(row >= 1) {
-			return SysResult.success();
-		}else {
-			return SysResult.fail();
-		}
+		projectService.updateObject(project);
+		return SysResult.success();
 	}
 }
