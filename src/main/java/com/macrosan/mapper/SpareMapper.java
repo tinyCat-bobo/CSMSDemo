@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.macrosan.pojo.Spare;
 import com.macrosan.pojo.SpareAddress;
+import org.springframework.stereotype.Repository;
 
 @Mapper
 public interface SpareMapper {

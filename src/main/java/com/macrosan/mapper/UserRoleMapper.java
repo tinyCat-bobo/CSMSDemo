@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import com.macrosan.pojo.UserRole;
+import org.springframework.stereotype.Repository;
 
 @Mapper
 public interface UserRoleMapper {

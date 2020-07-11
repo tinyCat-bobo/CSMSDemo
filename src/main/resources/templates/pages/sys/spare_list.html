@@ -56,8 +56,8 @@
 </div>
 <script type="text/javascript">
    $(function(){
-	   doGetObjects();
 	   $("#pageId").load("doPageUI",function(){
+		   doGetObjects();
 	   });
 	   $(".input-group-btn")
 	   .on("click",".btn-search",doQueryObjects)
@@ -166,7 +166,7 @@
    function doHandleResponseResult(result){//jsonResult
 	   if(result.status == 200){
 		   doSetTableBodyRows(result.data.records);//result.data-->pageObject
-		   doSetPagination(result.data);//pageObject
+		   doSetPagination(result.data);
 	   }else{
 		   doSetErrorMsg(result.msg);
 	   }
